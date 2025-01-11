@@ -17,4 +17,11 @@ public class LoanService : BaseService<Loan, int, LoanCreateUpdateDto, LoanDetai
         _repository = repository;
         _mapper = mapper;
     }
+
+    public async Task<IEnumerable<LoanDetailsDto>> GetLoansByBookId(int bookId)
+    {
+        IEnumerable<Loan> loans = await _repository.FindAll( loan => loan.BookId == bookId );
+
+        return loans.Select(loan => _mapper.MapEntityToDetailsDto(loan));
+    }
 }
