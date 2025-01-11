@@ -7,48 +7,55 @@ using System.Linq.Expressions;
 
 namespace LibraryLoans.Infrastructure.BaseClasses;
 
-public class BaseRepository<TEntity, Tid>(AppDbContext dbContext) : IBaseRepository<TEntity, Tid> where TEntity : BaseEntity<Tid>
+public class BaseRepository<TEntity, Tid> : IBaseRepository<TEntity, Tid> where TEntity : BaseEntity<Tid>
 {
+    protected AppDbContext _dbContext;
+
+    public BaseRepository(AppDbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
+
     public async Task<TEntity> CreateAsync(TEntity entity)
     {
-        await dbContext.Set<TEntity>().AddAsync(entity);
-        await dbContext.SaveChangesAsync();
+        await _dbContext.Set<TEntity>().AddAsync(entity);
+        await _dbContext.SaveChangesAsync();
 
         return entity;
     }
 
     public async Task<IEnumerable<TEntity>> GetAllAsync()
     {
-        return await dbContext.Set<TEntity>().ToListAsync();
+        return await _dbContext.Set<TEntity>().ToListAsync();
     }
 
     public async Task<TEntity?> GetAsync(Tid id)
     {
-        return await dbContext.Set<TEntity>().FindAsync(id);
+        return await _dbContext.Set<TEntity>().FindAsync(id);
     }
 
     public async Task<TEntity> UpdateAsync(TEntity entity)
     {
-        dbContext.Set<TEntity>().Update(entity);
-        await dbContext.SaveChangesAsync();
+        _dbContext.Set<TEntity>().Update(entity);
+        await _dbContext.SaveChangesAsync();
 
         return entity;
     }
 
     public async Task DeleteAsync(Tid id)
     {
-        TEntity? entity = await dbContext.Set<TEntity>().FindAsync(id);
+        TEntity? entity = await _dbContext.Set<TEntity>().FindAsync(id);
         if (entity == null)
         {
             throw new EntityNotFoundException("Could not fetch entity with specified id");
         }
 
-        dbContext.Set<TEntity>().Remove(entity);
-        await dbContext.SaveChangesAsync();
+        _dbContext.Set<TEntity>().Remove(entity);
+        await _dbContext.SaveChangesAsync();
     }
 
     public async Task<IEnumerable<TEntity>> FindAll(Expression<Func<TEntity, bool>> predicate)
     {
-        return await dbContext.Set<TEntity>().Where(predicate).ToListAsync();
+        return await _dbContext.Set<TEntity>().Where(predicate).ToListAsync();
     }
 }

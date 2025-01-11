@@ -24,7 +24,7 @@ public class ControllerAdviceMiddleware
             context.Response.ContentType = "application/json";
             await context.Response.WriteAsJsonAsync(ex.Error);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             context.Response.StatusCode = 500;
             context.Response.ContentType = "application/json";

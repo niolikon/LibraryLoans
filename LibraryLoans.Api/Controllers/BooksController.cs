@@ -43,6 +43,11 @@ public class BooksController : BaseController<int, BookCreateUpdateDto, BookDeta
             throw new MalformedRestException("Could not process given dto");
         }
 
+        if (bookId != loan.BookId)
+        {
+            throw new MalformedRestException("Could not reserve a book using another book");
+        }
+
         LoanDetailsDto loanInDb = await _loanService.CreateAsync(loan);
 
         return CreatedAtAction(
@@ -58,6 +63,11 @@ public class BooksController : BaseController<int, BookCreateUpdateDto, BookDeta
         if (!ModelState.IsValid)
         {
             throw new MalformedRestException("Could not process given dto");
+        }
+
+        if (bookId != loan.BookId)
+        {
+            throw new MalformedRestException("Could not reserve a book using another book");
         }
 
         await _loanService.UpdateAsync(loanId, loan);
