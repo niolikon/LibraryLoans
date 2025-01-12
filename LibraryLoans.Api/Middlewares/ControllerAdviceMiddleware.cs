@@ -20,11 +20,11 @@ public class ControllerAdviceMiddleware
         }
         catch (BaseRestException ex)
         {
-            context.Response.StatusCode = ex.StatusCode;
+            context.Response.StatusCode = (int) ex.StatusCode;
             context.Response.ContentType = "application/json";
             await context.Response.WriteAsJsonAsync(ex.Error);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             context.Response.StatusCode = 500;
             context.Response.ContentType = "application/json";
