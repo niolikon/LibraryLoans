@@ -27,10 +27,17 @@ public class LoanService : BaseService<Loan, int, LoanCreateUpdateDto, LoanDetai
 
     public async override Task<LoanDetailsDto> CreateAsync(LoanCreateUpdateDto dto)
     {
-        Loan? active = await _repository.GetActiveLoanForBook(dto.BookId);
-        if (active != null)
+        bool bookIsNotAvailable = ! (await _repository.IsBookAvailableForLoan(dto.BookId));
+        if (bookIsNotAvailable)
         {
-            throw new ConflictRestException("Could not reserve a book already reserved");
+            throw new ConflictRestException("The book is currently not available");
+        }
+
+        Loan? activeLoan = await _repository.GetActiveLoanForBook(dto.BookId);
+        bool bookIsNotLendable = (activeLoan != null);
+        if (bookIsNotLendable)
+        {
+            throw new ConflictRestException("The book is currently not lendable");
         }
 
         Loan model = _mapper.MapCreateUpdateDtoToEntity(dto);
@@ -43,17 +50,16 @@ public class LoanService : BaseService<Loan, int, LoanCreateUpdateDto, LoanDetai
     {
         Loan? entity = await _repository.GetActiveLoanForBook(dto.BookId);
 
-        if (entity == null)
+        bool bookNotReserved = (entity == null);
+        if (bookNotReserved)
         {
-            throw new NotFoundRestException("Could not find entity with specified id");
+            throw new NotFoundRestException("The book has not been reserved");
         }
-        else if (entity.Id != id)
+
+        bool bookReservedByAnotherMember = (entity.MemberId != dto.MemberId);
+        if (bookReservedByAnotherMember)
         {
-            throw new NotFoundRestException("Could not find entity with specified id");
-        }
-        else if (entity.MemberId != dto.MemberId)
-        {
-            throw new ConflictRestException("Could not return a book reserved by another member");
+            throw new ConflictRestException("The book has not been reserved by you");
         }
 
         Loan updatedEntity = entity;
