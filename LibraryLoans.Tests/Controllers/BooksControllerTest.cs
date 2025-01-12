@@ -1,10 +1,10 @@
 ﻿using FluentAssertions;
+using Moq;
+using Microsoft.AspNetCore.Mvc;
 using LibraryLoans.Api.Controllers;
 using LibraryLoans.Core.Dtos;
 using LibraryLoans.Core.Exceptions;
 using LibraryLoans.Core.Services;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
 
 namespace LibraryLoans.Tests.Controllers;
 
@@ -23,12 +23,11 @@ public class BooksControllerTest
 
     [Fact]
     [Trait("Story", "LIB1")]
-    public async Task Given_LoanForCorrectBook_When_MemberRequestsReservation_Then_BookIsReserved()
+    public async Task Given_CorrectRestRequestForm_When_MemberRequestsReservation_Then_BookReservationIsRelayed()
     {
         int bookId = 1;
-        int memberId = 1;
-        LoanCreateUpdateDto loan = new LoanCreateUpdateDto() { BookId = bookId, MemberId = memberId };
-        LoanDetailsDto loanCreated = new LoanDetailsDto() { Id = 1, BookId = bookId, MemberId = memberId, LoanDate = DateTime.Now };
+        LoanCreateUpdateDto loan = new LoanCreateUpdateDto() { BookId = bookId, MemberId = 2 };
+        LoanDetailsDto loanCreated = new LoanDetailsDto() { Id = 1, BookId = loan.BookId, MemberId = loan.MemberId, LoanDate = DateTime.Now };
         _loanServiceMock.Setup(loanService => loanService.CreateAsync(loan)).ReturnsAsync(loanCreated);
 
         IActionResult result = await _bookController.ReserveBook(bookId, loan);
@@ -38,14 +37,13 @@ public class BooksControllerTest
 
     [Fact]
     [Trait("Story", "LIB1")]
-    public async Task Given_LoanForWrongBook_When_MemberRequestsReservation_Then_BookReservationFailsWithMalformed()
+    public async Task Given_WrongBookRestRequestForm_When_MemberRequestsReservation_Then_BookReservationFailsWithMalformed()
     {
         int bookId = 1;
-        int memberId = 1;
-        int wrongBookId = 2;
-        LoanCreateUpdateDto loan = new LoanCreateUpdateDto() { BookId = bookId, MemberId = memberId };
+        int bookIdAnother = 2;
+        LoanCreateUpdateDto loan = new LoanCreateUpdateDto() { BookId = bookId, MemberId = 1 };
 
-        Func<Task> bookReservation = async () => await _bookController.ReserveBook(wrongBookId, loan);
+        Func<Task> bookReservation = async () => await _bookController.ReserveBook(bookIdAnother, loan);
 
         await bookReservation.Should().ThrowAsync<MalformedRestException>();
         _loanServiceMock.Verify(loanService => loanService.CreateAsync(loan), Times.Never());
@@ -53,12 +51,11 @@ public class BooksControllerTest
 
     [Fact]
     [Trait("Story", "LIB1")]
-    public async Task Given_LoanForCorrectBook_When_MemberRequestsReturn_Then_BookIsReturned()
+    public async Task Given_CorrectRestRequestForm_When_MemberRequestsReturn_Then_BookReturnIsRelayed()
     {
         int bookId = 1;
-        int memberId = 1;
         int loanId = 1;
-        LoanCreateUpdateDto loan = new LoanCreateUpdateDto() { BookId = bookId, MemberId = memberId };
+        LoanCreateUpdateDto loan = new LoanCreateUpdateDto() { BookId = bookId, MemberId = 1 };
 
         IActionResult result = await _bookController.ReturnBook(bookId, loanId, loan);
 
@@ -67,15 +64,14 @@ public class BooksControllerTest
 
     [Fact]
     [Trait("Story", "LIB1")]
-    public async Task Given_LoanForWrongBook_When_MemberRequestsReturn_Then_BookReturnFailsWithMalformed()
+    public async Task Given_WrongBookRestRequestForm_When_MemberRequestsReturn_Then_BookReturnFailsWithMalformed()
     {
         int bookId = 1;
-        int memberId = 1;
         int loanId = 1;
-        int wrongBookId = 2;
-        LoanCreateUpdateDto loan = new LoanCreateUpdateDto() { BookId = wrongBookId, MemberId = memberId };
+        int bookIdAnother = 2;
+        LoanCreateUpdateDto loan = new LoanCreateUpdateDto() { BookId = bookId, MemberId = 1 };
 
-        Func<Task> bookReturn = async () => await _bookController.ReturnBook(bookId, loanId, loan);
+        Func<Task> bookReturn = async () => await _bookController.ReturnBook(bookIdAnother, loanId, loan);
 
         await bookReturn.Should().ThrowAsync<MalformedRestException>();
         _loanServiceMock.Verify(loanService => loanService.UpdateAsync(loanId, loan), Times.Never());

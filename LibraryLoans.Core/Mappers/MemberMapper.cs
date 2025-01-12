@@ -28,13 +28,18 @@ public class MemberMapper : IMemberMapper
 
     public MemberDetailsDto MapEntityToDetailsDto(Member entity)
     {
-        return new MemberDetailsDto()
+        MemberDetailsDto result = new MemberDetailsDto()
         {
             Id = entity.Id,
             Name = entity.Name,
             Email = entity.Email,
             MembershipDate = entity.MembershipDate,
-            Loans = entity.Loans.Select(loan =>
+            Loans = [],
+        };
+
+        if (entity.Loans != null)
+        {
+            result.Loans = entity.Loans.Select(loan =>
                 new LoanDetailsDto()
                 {
                     Id = loan.Id,
@@ -43,7 +48,9 @@ public class MemberMapper : IMemberMapper
                     LoanDate = loan.LoanDate,
                     ReturnDate = loan.ReturnDate
                 })
-                .ToList(),
-        };
+                .ToList();
+        }
+
+        return result;
     }
 }

@@ -39,7 +39,7 @@ public class LoanService : BaseService<Loan, int, LoanCreateUpdateDto, LoanDetai
         return _mapper.MapEntityToDetailsDto(await _repository.CreateAsync(model));
     }
 
-    public async virtual Task UpdateAsync(int id, LoanCreateUpdateDto dto)
+    public async override Task UpdateAsync(int id, LoanCreateUpdateDto dto)
     {
         Loan? entity = await _repository.GetActiveLoanForBook(dto.BookId);
 
