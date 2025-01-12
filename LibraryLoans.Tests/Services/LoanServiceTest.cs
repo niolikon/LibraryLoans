@@ -93,14 +93,13 @@ public class LoanServiceTest
     public async Task Given_BookReserved_When_MemberRequestsReturn_Then_BookIsReturned()
     {
         int loanId = 1;
-        int bookId = 1;
-        LoanCreateUpdateDto loanFromUser = new LoanCreateUpdateDto() { BookId = bookId, MemberId = 1 };
+        LoanCreateUpdateDto loanFromUser = new LoanCreateUpdateDto() { BookId = 1, MemberId = 1 };
         Loan loanActiveForBook = new Loan() { Id = 1, BookId = loanFromUser.BookId, MemberId = loanFromUser.MemberId, LoanDate = DateTime.Now.AddDays(-7) };
         _repositoryMock.Setup(repository => repository.GetActiveLoanForBook(loanFromUser.BookId)).ReturnsAsync(loanActiveForBook);
         
         await _loanService.UpdateAsync(loanId, loanFromUser);
 
-        _repositoryMock.Verify(repository => repository.GetActiveLoanForBook(bookId), Times.Once);
+        _repositoryMock.Verify(repository => repository.GetActiveLoanForBook(loanFromUser.BookId), Times.Once);
         _repositoryMock.Verify(repository => repository.UpdateAsync(loanActiveForBook), Times.Once);
         loanActiveForBook.ReturnDate.Should().BeAfter(DateTime.MinValue);
     }
@@ -111,8 +110,7 @@ public class LoanServiceTest
     public async Task Given_BookNotReserved_When_MemberRequestsReturn_Then_ExceptionWithMessageIsThrown()
     {
         int loanId = 1;
-        int bookId = 1;
-        LoanCreateUpdateDto loanFromUser = new LoanCreateUpdateDto() { BookId = bookId, MemberId = 1 };
+        LoanCreateUpdateDto loanFromUser = new LoanCreateUpdateDto() { BookId = 1, MemberId = 1 };
         _repositoryMock.Setup(repository => repository.GetActiveLoanForBook(loanFromUser.BookId)).ReturnsAsync((Loan?) null);
         
         Func<Task> bookReturnForAvailableBook = async () => await _loanService.UpdateAsync(loanId, loanFromUser);
@@ -120,7 +118,7 @@ public class LoanServiceTest
         await bookReturnForAvailableBook.Should()
             .ThrowAsync<NotFoundRestException>()
             .WithMessage("The book has not been reserved");
-        _repositoryMock.Verify(repository => repository.GetActiveLoanForBook(bookId), Times.Once);
+        _repositoryMock.Verify(repository => repository.GetActiveLoanForBook(loanFromUser.BookId), Times.Once);
         _repositoryMock.Verify(repository => repository.UpdateAsync(It.IsAny<Loan>()), Times.Never);
     }
 
@@ -130,9 +128,8 @@ public class LoanServiceTest
     public async Task Given_BookReservedByAnotherMember_When_MemberRequestsReturn_Then_ExceptionWithMessageIsThrown()
     {
         int loanId = 1;
-        int bookId = 1;
         int memberIdAnother = 4;
-        LoanCreateUpdateDto loanFromUser = new LoanCreateUpdateDto() { BookId = bookId, MemberId = 1 };
+        LoanCreateUpdateDto loanFromUser = new LoanCreateUpdateDto() { BookId = 1, MemberId = 1 };
         Loan loanActiveForBook = new Loan() { Id = 1, BookId = loanFromUser.BookId, MemberId = memberIdAnother, LoanDate = DateTime.Now.AddDays(-7) };
         _repositoryMock.Setup(repository => repository.GetActiveLoanForBook(loanFromUser.BookId)).ReturnsAsync(loanActiveForBook);
         
@@ -141,7 +138,7 @@ public class LoanServiceTest
         await bookReturnFromDifferentMember.Should()
             .ThrowAsync<ConflictRestException>()
             .WithMessage("The book has not been reserved by you");
-        _repositoryMock.Verify(repository => repository.GetActiveLoanForBook(bookId), Times.Once);
+        _repositoryMock.Verify(repository => repository.GetActiveLoanForBook(loanFromUser.BookId), Times.Once);
         _repositoryMock.Verify(repository => repository.UpdateAsync(It.IsAny<Loan>()), Times.Never);
     }
 }
