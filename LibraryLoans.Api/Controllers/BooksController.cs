@@ -51,8 +51,12 @@ public class BooksController : BaseController<int, BookCreateUpdateDto, BookDeta
         LoanDetailsDto loanInDb = await _loanService.CreateAsync(loan);
 
         return CreatedAtAction(
-            nameof(GetLoan), 
-            new { Id = loanInDb.Id }, 
+            nameof(GetLoan),
+            new
+            {
+                bookId = loanInDb.BookId,
+                loanId = loanInDb.Id
+            },
             loanInDb
         );
     }
