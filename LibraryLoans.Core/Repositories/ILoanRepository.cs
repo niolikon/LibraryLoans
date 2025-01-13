@@ -8,4 +8,6 @@ public interface ILoanRepository : IBaseRepository<Loan, int>
     Task<bool> IsBookAvailableForLoan(int bookId);
 
     Task<Loan?> GetActiveLoanForBook(int bookId);
+
+    Task<List<Loan>> GetActiveLoansForMember(int memberId);
 }

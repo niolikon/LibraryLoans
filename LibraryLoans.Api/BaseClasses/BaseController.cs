@@ -11,7 +11,7 @@ public class BaseController<TId, TCreateUpdateDto, TDetailsDto>(IBaseService<TId
 {
 
     [HttpPost]
-    public async Task<IActionResult> CreateSingle([FromBody] TCreateUpdateDto dto)
+    public async virtual Task<IActionResult> CreateSingle([FromBody] TCreateUpdateDto dto)
     {
         if (! ModelState.IsValid)
         {
@@ -27,21 +27,21 @@ public class BaseController<TId, TCreateUpdateDto, TDetailsDto>(IBaseService<TId
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetSingle(TId id)
+    public async virtual Task<IActionResult> GetSingle(TId id)
     {
         TDetailsDto dto = await service.GetAsync(id);
         return Ok(dto);
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async virtual Task<IActionResult> GetAll()
     {
         IEnumerable<TDetailsDto> dtos = await service.GetAllAsync();
         return Ok(dtos);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateSingle(TId id, [FromBody] TCreateUpdateDto dto)
+    public async virtual Task<IActionResult> UpdateSingle(TId id, [FromBody] TCreateUpdateDto dto)
     {
         if (!ModelState.IsValid)
         {
@@ -53,7 +53,7 @@ public class BaseController<TId, TCreateUpdateDto, TDetailsDto>(IBaseService<TId
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteSingle(TId id)
+    public async virtual Task<IActionResult> DeleteSingle(TId id)
     {
         await service.DeleteAsync(id);
         return NoContent();

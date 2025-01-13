@@ -46,17 +46,17 @@ public class BaseService<TEntity, TId, TCreateUpdateDto, TDetailsDto> : IBaseSer
 
     public async virtual Task UpdateAsync(TId id, TCreateUpdateDto dto)
     {
-        TEntity? entity = await _repository.GetAsync(id);
-
-        if (entity == null)
-        {
-            throw new NotFoundRestException("Could not find entity with specified id");
-        }
-
         TEntity updatedEntity = _mapper.MapCreateUpdateDtoToEntity(dto);
         updatedEntity.Id = id;
 
-        await _repository.UpdateAsync(updatedEntity);
+        try
+        {
+            await _repository.UpdateAsync(updatedEntity);
+        }
+        catch (EntityNotFoundException)
+        {
+            throw new NotFoundRestException("Could not find entity with specified id");
+        }
     }
 
     public async virtual Task DeleteAsync(TId id)
