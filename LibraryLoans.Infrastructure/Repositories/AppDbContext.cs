@@ -13,16 +13,16 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        builder.Entity<Loan>()
-            .HasOne<Member>(loan => loan.Member)
-            .WithMany(member => member.Loans)
+        builder.Entity<Member>()
+            .HasMany<Loan>(member => member.Loans)
+            .WithOne(loan => loan.Member)
             .HasForeignKey(loan => loan.MemberId)
-            .IsRequired();
+            .OnDelete(DeleteBehavior.Cascade);
 
-        builder.Entity<Loan>()
-            .HasOne<Book>(loan => loan.Book)
-            .WithMany()
+        builder.Entity<Book>()
+            .HasMany<Loan>()
+            .WithOne(book => book.Book)
             .HasForeignKey(loan => loan.BookId)
-            .IsRequired();
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

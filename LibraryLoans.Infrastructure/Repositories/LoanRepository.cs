@@ -38,4 +38,15 @@ public class LoanRepository : BaseRepository<Loan, int>, ILoanRepository
 
         return active;
     }
+
+    public async Task<List<Loan>> GetActiveLoansForMember(int memberId)
+    {
+        IQueryable<Loan> loans = _dbContext.Set<Loan>();
+
+        return await (from loan in loans
+                      where loan.MemberId == memberId
+                      where loan.LoanDate != default
+                      where loan.ReturnDate == default
+                      select loan).ToListAsync();
+    }
 }
