@@ -48,8 +48,8 @@ public class BaseController<TId, TCreateUpdateDto, TDetailsDto>(IBaseService<TId
             throw new MalformedRestException("Could not process given dto");
         }
 
-        await service.UpdateAsync(id, dto);
-        return Ok(dto);
+        TDetailsDto updatedDto = await service.UpdateAsync(id, dto);
+        return Ok(updatedDto);
     }
 
     [HttpDelete("{id}")]

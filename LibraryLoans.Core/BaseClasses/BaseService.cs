@@ -44,14 +44,15 @@ public class BaseService<TEntity, TId, TCreateUpdateDto, TDetailsDto> : IBaseSer
         return _mapper.MapEntityToDetailsDto(entity);
     }
 
-    public async virtual Task UpdateAsync(TId id, TCreateUpdateDto dto)
+    public async virtual Task<TDetailsDto> UpdateAsync(TId id, TCreateUpdateDto dto)
     {
-        TEntity updatedEntity = _mapper.MapCreateUpdateDtoToEntity(dto);
-        updatedEntity.Id = id;
+        TEntity entityWithNewData = _mapper.MapCreateUpdateDtoToEntity(dto);
+        entityWithNewData.Id = id;
 
         try
         {
-            await _repository.UpdateAsync(updatedEntity);
+            TEntity updatedEntity = await _repository.UpdateAsync(entityWithNewData);
+            return _mapper.MapEntityToDetailsDto(updatedEntity);
         }
         catch (EntityNotFoundException)
         {

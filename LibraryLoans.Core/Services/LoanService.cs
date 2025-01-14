@@ -46,7 +46,7 @@ public class LoanService : BaseService<Loan, int, LoanCreateUpdateDto, LoanDetai
         return _mapper.MapEntityToDetailsDto(await _repository.CreateAsync(model));
     }
 
-    public async override Task UpdateAsync(int id, LoanCreateUpdateDto dto)
+    public async override Task<LoanDetailsDto> UpdateAsync(int id, LoanCreateUpdateDto dto)
     {
         Loan? entity = await _repository.GetActiveLoanForBook(dto.BookId);
 
@@ -67,5 +67,7 @@ public class LoanService : BaseService<Loan, int, LoanCreateUpdateDto, LoanDetai
         updatedEntity.ReturnDate = DateTime.Now;
 
         await _repository.UpdateAsync(updatedEntity);
+
+        return _mapper.MapEntityToDetailsDto(updatedEntity);
     }
 }

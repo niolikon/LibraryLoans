@@ -12,7 +12,7 @@ public interface IBaseService<TId, TCreateUpdateDto, TDetailsDto>
 
     Task<IEnumerable<TDetailsDto>> GetAllAsync();
 
-    Task UpdateAsync(TId id, TCreateUpdateDto dto);
+    Task<TDetailsDto> UpdateAsync(TId id, TCreateUpdateDto dto);
 
     Task DeleteAsync(TId id);
 }
