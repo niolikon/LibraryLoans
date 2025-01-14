@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  app:
+    image: libraryloans-api:latest
+    ports:
+      - "5213:5213"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DOTNET_URLS=http://+:5213
+      - ConnectionStrings__DefaultConnection=Server=db;Database=LibraryLoans;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=true;MultipleActiveResultSets=true
+    depends_on:
+      - db
+
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=${SA_PASSWORD}
+    volumes:
+      - sql_data:/var/opt/mssql
+
+volumes:
+  sql_data:
