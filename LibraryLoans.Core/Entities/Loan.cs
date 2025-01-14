@@ -15,4 +15,35 @@ public class Loan : BaseEntity<int>
     public DateTime LoanDate { get; set; }
 
     public DateTime ReturnDate { get; set; }
+
+    public override void CopyFrom(BaseEntity<int> other)
+    {
+        if (other == null)
+        {
+            return;
+        }
+
+        if (other is Loan l)
+        {
+            this.BookId = l.BookId;
+            this.MemberId = l.MemberId;
+
+            if (l.Book != null)
+            {
+                this.Book = l.Book;
+            }
+            if (l.Member != null)
+            {
+                this.Member = l.Member;
+            }
+            if (l.LoanDate != DateTime.MinValue)
+            {
+                this.LoanDate = l.LoanDate;
+            }
+            if (l.ReturnDate != DateTime.MinValue)
+            {
+                this.ReturnDate = l.ReturnDate;
+            }
+        }
+    }
 }
