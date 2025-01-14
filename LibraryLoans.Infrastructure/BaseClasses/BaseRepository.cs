@@ -36,16 +36,18 @@ public class BaseRepository<TEntity, Tid> : IBaseRepository<TEntity, Tid> where 
 
     public async Task<TEntity> UpdateAsync(TEntity entity)
     {
-        _dbContext.Entry(entity).State = EntityState.Modified;
-        _dbContext.Set<TEntity>().Update(entity);
-
-        int rowsAffected = await _dbContext.SaveChangesAsync();
-        if (rowsAffected == 0)
+        TEntity? entityInDb = await _dbContext.Set<TEntity>().FindAsync(entity.Id);
+        if (entityInDb == null)
         {
             throw new EntityNotFoundException("Could not fetch entity with specified id");
         }
 
-        return entity;
+        entityInDb.CopyFrom(entity);
+
+        _dbContext.Set<TEntity>().Update(entityInDb);
+        await _dbContext.SaveChangesAsync();
+
+        return entityInDb;
     }
 
     public async Task DeleteAsync(Tid id)
