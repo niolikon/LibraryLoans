@@ -1,9 +1,9 @@
-﻿using LibraryLoans.Core.BaseInterfaces;
+﻿using LibraryLoans.Core.Commons;
 using LibraryLoans.Core.Entities;
 
 namespace LibraryLoans.Core.Repositories;
 
-public interface ILoanRepository : IBaseRepository<Loan, int>
+public interface ILoanRepository : ICrudRepository<Loan, int>
 {
     Task<bool> IsBookAvailableForLoan(int bookId);
 

@@ -1,14 +1,14 @@
 ﻿using System.Linq.Expressions;
 
-namespace LibraryLoans.Core.BaseInterfaces;
+namespace LibraryLoans.Core.Commons;
 
-public interface IBaseRepository<TEntity, Tid> where TEntity : class
+public interface ICrudRepository<TEntity, Tid> where TEntity : class
 {
     Task<TEntity> CreateAsync(TEntity entity);
 
-    Task<TEntity?> GetAsync(Tid id);
+    Task<TEntity?> ReadAsync(Tid id);
 
-    Task<IEnumerable<TEntity>> GetAllAsync();
+    Task<IEnumerable<TEntity>> ReadAllAsync();
 
     Task<TEntity> UpdateAsync(TEntity entity);
 

@@ -1,4 +1,4 @@
-﻿using LibraryLoans.Core.BaseClasses;
+﻿using LibraryLoans.Core.Commons;
 using System.ComponentModel.DataAnnotations;
 
 namespace LibraryLoans.Core.Dtos;

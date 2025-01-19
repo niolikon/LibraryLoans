@@ -1,11 +1,11 @@
 ﻿using LibraryLoans.Core.Entities;
 using LibraryLoans.Core.Repositories;
-using LibraryLoans.Infrastructure.BaseClasses;
+using LibraryLoans.Infrastructure.Commons;
 using Microsoft.EntityFrameworkCore;
 
 namespace LibraryLoans.Infrastructure.Repositories;
 
-public class LoanRepository : BaseRepository<Loan, int>, ILoanRepository 
+public class LoanRepository : BaseCrudRepository<Loan, int>, ILoanRepository 
 {
     public LoanRepository(AppDbContext dbContext) : base(dbContext) { }
 

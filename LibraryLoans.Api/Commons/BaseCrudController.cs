@@ -1,11 +1,10 @@
-﻿using LibraryLoans.Core.BaseClasses;
-using LibraryLoans.Core.BaseInterfaces;
+﻿using LibraryLoans.Core.Commons;
 using LibraryLoans.Core.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LibraryLoans.Api.BaseClasses;
+namespace LibraryLoans.Api.Commons;
 
-public class BaseController<TId, TCreateUpdateDto, TDetailsDto>(IBaseService<TId, TCreateUpdateDto, TDetailsDto> service) : ControllerBase 
+public class BaseCrudController<TId, TCreateUpdateDto, TDetailsDto>(ICrudService<TId, TCreateUpdateDto, TDetailsDto> service) : ControllerBase 
     where TCreateUpdateDto : BaseCreateUpdateDto
     where TDetailsDto : BaseDetailsDto<TId>
 {
@@ -29,14 +28,14 @@ public class BaseController<TId, TCreateUpdateDto, TDetailsDto>(IBaseService<TId
     [HttpGet("{id}")]
     public async virtual Task<IActionResult> GetSingle(TId id)
     {
-        TDetailsDto dto = await service.GetAsync(id);
+        TDetailsDto dto = await service.ReadAsync(id);
         return Ok(dto);
     }
 
     [HttpGet]
     public async virtual Task<IActionResult> GetAll()
     {
-        IEnumerable<TDetailsDto> dtos = await service.GetAllAsync();
+        IEnumerable<TDetailsDto> dtos = await service.ReadAllAsync();
         return Ok(dtos);
     }
 

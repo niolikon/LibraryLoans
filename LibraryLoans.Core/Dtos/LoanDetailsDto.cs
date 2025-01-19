@@ -1,4 +1,4 @@
-﻿using LibraryLoans.Core.BaseClasses;
+﻿using LibraryLoans.Core.Commons;
 using System.Text.Json.Serialization;
 
 namespace LibraryLoans.Core.Dtos;
