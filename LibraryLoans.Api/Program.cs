@@ -1,13 +1,7 @@
-using LibraryLoans.Api.HealthChecks;
-using LibraryLoans.Core.Mappers;
-using LibraryLoans.Core.Monitors;
-using LibraryLoans.Core.Repositories;
-using LibraryLoans.Core.Services;
-using LibraryLoans.Infrastructure.Monitors;
+using LibraryLoans.Api.Middlewares;
+using LibraryLoans.Api.Extensions;
 using LibraryLoans.Infrastructure.Repositories;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
-using SchoolSystem.Api.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,22 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>( options => options.UseSqlServer(connectionString));
 
-builder.Services.AddScoped<IBookMapper, BookMapper>();
-builder.Services.AddScoped<ILoanMapper, LoanMapper>();
-builder.Services.AddScoped<IMemberMapper, MemberMapper>();
+builder.Services.ConfigureDependencies();
 
-builder.Services.AddScoped<IBookRepository, BookRepository>();
-builder.Services.AddScoped<ILoanRepository, LoanRepository>();
-builder.Services.AddScoped<IMemberRepository, MemberRepository>();
-builder.Services.AddScoped<IDatabaseMonitor, DatabaseMonitor>();
-
-builder.Services.AddScoped<IBookService, BookService>();
-builder.Services.AddScoped<ILoanService, LoanService>();
-builder.Services.AddScoped<IMemberService, MemberService>();
-builder.Services.AddScoped<IDatabaseService, DatabaseService>();
-
-builder.Services.AddHealthChecks()
-    .AddCheck<DatabaseHealthCheck>("Database", tags:["db"]);
+builder.Services.AddApplicationHealthChecks();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -50,18 +31,9 @@ app.UseRouting();
 
 app.UseMiddleware<ControllerAdviceMiddleware>();
 
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    await dbContext.Database.EnsureCreatedAsync();
-}
+app.EnsureDatabaseCreated();
 
-app.MapHealthChecks("/health");
-
-app.MapHealthChecks("/health/database", new HealthCheckOptions
-{
-    Predicate = check => check.Tags.Contains("db")
-});
+app.MapApplicationHealthChecks();
 
 app.MapControllers();
 
