@@ -1,4 +1,4 @@
-﻿using LibraryLoans.Core.BaseClasses;
+﻿using LibraryLoans.Core.Commons;
 using LibraryLoans.Core.Dtos;
 using LibraryLoans.Core.Entities;
 using LibraryLoans.Core.Exceptions;
@@ -7,7 +7,7 @@ using LibraryLoans.Core.Repositories;
 
 namespace LibraryLoans.Core.Services;
 
-public class MemberService : BaseService<Member, int, MemberCreateUpdateDto, MemberDetailsDto>, IMemberService
+public class MemberService : BaseCrudService<Member, int, MemberCreateUpdateDto, MemberDetailsDto>, IMemberService
 {
     private ILoanRepository _loanRepository;
 
@@ -16,9 +16,9 @@ public class MemberService : BaseService<Member, int, MemberCreateUpdateDto, Mem
         _loanRepository = loanRepository;
     }
 
-    public async override Task<MemberDetailsDto> GetAsync(int id)
+    public async override Task<MemberDetailsDto> ReadAsync(int id)
     {
-        Member? entity = await _repository.GetAsync(id);
+        Member? entity = await _repository.ReadAsync(id);
 
         if (entity == null)
         {

@@ -1,16 +1,14 @@
-﻿using LibraryLoans.Core.BaseClasses;
+﻿namespace LibraryLoans.Core.Commons;
 
-namespace LibraryLoans.Core.BaseInterfaces;
-
-public interface IBaseService<TId, TCreateUpdateDto, TDetailsDto>
+public interface ICrudService<TId, TCreateUpdateDto, TDetailsDto>
     where TCreateUpdateDto : BaseCreateUpdateDto
     where TDetailsDto : BaseDetailsDto<TId>
 {
     Task<TDetailsDto> CreateAsync(TCreateUpdateDto dto);
 
-    Task<TDetailsDto> GetAsync(TId id);
+    Task<TDetailsDto> ReadAsync(TId id);
 
-    Task<IEnumerable<TDetailsDto>> GetAllAsync();
+    Task<IEnumerable<TDetailsDto>> ReadAllAsync();
 
     Task<TDetailsDto> UpdateAsync(TId id, TCreateUpdateDto dto);
 

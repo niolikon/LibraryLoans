@@ -1,4 +1,4 @@
-﻿using LibraryLoans.Core.BaseClasses;
+﻿using LibraryLoans.Core.Commons;
 using LibraryLoans.Core.Dtos;
 using LibraryLoans.Core.Entities;
 using LibraryLoans.Core.Exceptions;
@@ -7,7 +7,7 @@ using LibraryLoans.Core.Repositories;
 
 namespace LibraryLoans.Core.Services;
 
-public class LoanService : BaseService<Loan, int, LoanCreateUpdateDto, LoanDetailsDto>, ILoanService
+public class LoanService : BaseCrudService<Loan, int, LoanCreateUpdateDto, LoanDetailsDto>, ILoanService
 {
     protected new ILoanRepository _repository;
     protected new ILoanMapper _mapper;

@@ -1,6 +1,6 @@
-﻿using LibraryLoans.Core.BaseClasses;
+﻿using LibraryLoans.Core.Commons;
 
-namespace SchoolSystem.Api.Common;
+namespace LibraryLoans.Api.Middlewares;
 
 
 public class ControllerAdviceMiddleware

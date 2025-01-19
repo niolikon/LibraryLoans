@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace LibraryLoans.Core.BaseClasses;
+namespace LibraryLoans.Core.Commons;
 
 public class BaseDetailsDto<TId>
 {

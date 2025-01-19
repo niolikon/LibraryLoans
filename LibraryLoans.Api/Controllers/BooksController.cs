@@ -1,4 +1,4 @@
-﻿using LibraryLoans.Api.BaseClasses;
+﻿using LibraryLoans.Api.Commons;
 using LibraryLoans.Core.Dtos;
 using LibraryLoans.Core.Exceptions;
 using LibraryLoans.Core.Services;
@@ -8,7 +8,7 @@ namespace LibraryLoans.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class BooksController : BaseController<int, BookCreateUpdateDto, BookDetailsDto>
+public class BooksController : BaseCrudController<int, BookCreateUpdateDto, BookDetailsDto>
 {
     private readonly IBookService _bookService;
 
@@ -30,7 +30,7 @@ public class BooksController : BaseController<int, BookCreateUpdateDto, BookDeta
     [HttpGet("{bookId}/loans/{loanId}")]
     public async Task<IActionResult> GetLoan(int loanId)
     {
-        LoanDetailsDto loanInDb = await _loanService.GetAsync(loanId);
+        LoanDetailsDto loanInDb = await _loanService.ReadAsync(loanId);
 
         return Ok(loanInDb);
     }
