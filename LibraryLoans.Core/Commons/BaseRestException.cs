@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace LibraryLoans.Core.BaseClasses;
+namespace LibraryLoans.Core.Commons;
 
 public class BaseRestException : Exception
 {

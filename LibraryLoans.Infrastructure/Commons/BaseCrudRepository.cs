@@ -1,17 +1,16 @@
-﻿using LibraryLoans.Core.BaseClasses;
-using LibraryLoans.Core.BaseInterfaces;
+﻿using LibraryLoans.Core.Commons;
 using LibraryLoans.Core.Exceptions;
 using LibraryLoans.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace LibraryLoans.Infrastructure.BaseClasses;
+namespace LibraryLoans.Infrastructure.Commons;
 
-public class BaseRepository<TEntity, Tid> : IBaseRepository<TEntity, Tid> where TEntity : BaseEntity<Tid>
+public class BaseCrudRepository<TEntity, Tid> : ICrudRepository<TEntity, Tid> where TEntity : BaseEntity<Tid>
 {
     protected AppDbContext _dbContext;
 
-    public BaseRepository(AppDbContext dbContext)
+    public BaseCrudRepository(AppDbContext dbContext)
     {
         _dbContext = dbContext;
     }
@@ -24,12 +23,12 @@ public class BaseRepository<TEntity, Tid> : IBaseRepository<TEntity, Tid> where 
         return entity;
     }
 
-    public async Task<IEnumerable<TEntity>> GetAllAsync()
+    public async Task<IEnumerable<TEntity>> ReadAllAsync()
     {
         return await _dbContext.Set<TEntity>().ToListAsync();
     }
 
-    public async Task<TEntity?> GetAsync(Tid id)
+    public async Task<TEntity?> ReadAsync(Tid id)
     {
         return await _dbContext.Set<TEntity>().FindAsync(id);
     }

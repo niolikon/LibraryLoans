@@ -1,8 +1,8 @@
-﻿using LibraryLoans.Core.BaseInterfaces;
+﻿using LibraryLoans.Core.Commons;
 using LibraryLoans.Core.Dtos;
 
 namespace LibraryLoans.Core.Services;
 
-public interface IMemberService : IBaseService<int, MemberCreateUpdateDto, MemberDetailsDto>
+public interface IMemberService : ICrudService<int, MemberCreateUpdateDto, MemberDetailsDto>
 {
 }

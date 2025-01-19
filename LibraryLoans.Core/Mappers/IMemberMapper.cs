@@ -1,9 +1,9 @@
-﻿using LibraryLoans.Core.BaseInterfaces;
+﻿using LibraryLoans.Core.Commons;
 using LibraryLoans.Core.Dtos;
 using LibraryLoans.Core.Entities;
 
 namespace LibraryLoans.Core.Mappers;
 
-public interface IMemberMapper : IBaseMapper<Member, int, MemberCreateUpdateDto, MemberDetailsDto>
+public interface IMemberMapper : IMapper<Member, int, MemberCreateUpdateDto, MemberDetailsDto>
 {
 }

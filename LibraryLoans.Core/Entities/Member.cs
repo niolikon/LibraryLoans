@@ -1,4 +1,4 @@
-﻿using LibraryLoans.Core.BaseClasses;
+﻿using LibraryLoans.Core.Commons;
 using System.Xml.Linq;
 
 namespace LibraryLoans.Core.Entities;

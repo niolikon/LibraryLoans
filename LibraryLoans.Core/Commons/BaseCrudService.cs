@@ -1,18 +1,17 @@
-﻿using LibraryLoans.Core.BaseInterfaces;
-using LibraryLoans.Core.Exceptions;
+﻿using LibraryLoans.Core.Exceptions;
 
-namespace LibraryLoans.Core.BaseClasses;
+namespace LibraryLoans.Core.Commons;
 
-public class BaseService<TEntity, TId, TCreateUpdateDto, TDetailsDto> : IBaseService<TId, TCreateUpdateDto, TDetailsDto> 
+public class BaseCrudService<TEntity, TId, TCreateUpdateDto, TDetailsDto> : ICrudService<TId, TCreateUpdateDto, TDetailsDto> 
     where TEntity : BaseEntity<TId> 
     where TCreateUpdateDto : BaseCreateUpdateDto
     where TDetailsDto : BaseDetailsDto<TId>
 {
-    protected IBaseRepository<TEntity, TId> _repository;
-    protected IBaseMapper<TEntity, TId, TCreateUpdateDto, TDetailsDto> _mapper;
+    protected ICrudRepository<TEntity, TId> _repository;
+    protected IMapper<TEntity, TId, TCreateUpdateDto, TDetailsDto> _mapper;
 
-    public BaseService(IBaseRepository<TEntity, TId> repository, 
-        IBaseMapper<TEntity, TId, TCreateUpdateDto, TDetailsDto> mapper)
+    public BaseCrudService(ICrudRepository<TEntity, TId> repository, 
+        IMapper<TEntity, TId, TCreateUpdateDto, TDetailsDto> mapper)
     {
         _repository = repository;
         _mapper = mapper;
@@ -25,16 +24,16 @@ public class BaseService<TEntity, TId, TCreateUpdateDto, TDetailsDto> : IBaseSer
         return _mapper.MapEntityToDetailsDto(await _repository.CreateAsync(model));
     }
 
-    public async virtual Task<IEnumerable<TDetailsDto>> GetAllAsync()
+    public async virtual Task<IEnumerable<TDetailsDto>> ReadAllAsync()
     {
-        IEnumerable<TEntity> entities = await _repository.GetAllAsync();
+        IEnumerable<TEntity> entities = await _repository.ReadAllAsync();
 
         return entities.Select(_mapper.MapEntityToDetailsDto);
     }
 
-    public async virtual Task<TDetailsDto> GetAsync(TId id)
+    public async virtual Task<TDetailsDto> ReadAsync(TId id)
     {
-        TEntity? entity = await _repository.GetAsync(id);
+        TEntity? entity = await _repository.ReadAsync(id);
 
         if (entity == null)
         {

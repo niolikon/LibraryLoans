@@ -1,4 +1,4 @@
-﻿namespace LibraryLoans.Core.BaseClasses;
+﻿namespace LibraryLoans.Core.Commons;
 
 public abstract class BaseEntity<Tid>
 {

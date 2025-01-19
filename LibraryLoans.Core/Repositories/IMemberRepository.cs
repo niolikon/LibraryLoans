@@ -1,8 +1,8 @@
-﻿using LibraryLoans.Core.BaseInterfaces;
+﻿using LibraryLoans.Core.Commons;
 using LibraryLoans.Core.Entities;
 
 namespace LibraryLoans.Core.Repositories;
 
-public interface IMemberRepository : IBaseRepository<Member, int>
+public interface IMemberRepository : ICrudRepository<Member, int>
 {
 }

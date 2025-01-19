@@ -1,9 +1,7 @@
-using LibraryLoans.Core.Mappers;
-using LibraryLoans.Core.Repositories;
-using LibraryLoans.Core.Services;
+using LibraryLoans.Api.Middlewares;
+using LibraryLoans.Api.Extensions;
 using LibraryLoans.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
-using SchoolSystem.Api.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,18 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>( options => options.UseSqlServer(connectionString));
 
-builder.Services.AddScoped<IBookMapper, BookMapper>();
-builder.Services.AddScoped<ILoanMapper, LoanMapper>();
-builder.Services.AddScoped<IMemberMapper, MemberMapper>();
+builder.Services.ConfigureDependencies();
 
-builder.Services.AddScoped<IBookRepository, BookRepository>();
-builder.Services.AddScoped<ILoanRepository, LoanRepository>();
-builder.Services.AddScoped<IMemberRepository, MemberRepository>();
-
-builder.Services.AddScoped<IBookService, BookService>();
-builder.Services.AddScoped<ILoanService, LoanService>();
-builder.Services.AddScoped<IMemberService, MemberService>();
-
+builder.Services.AddApplicationHealthChecks();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -42,11 +31,9 @@ app.UseRouting();
 
 app.UseMiddleware<ControllerAdviceMiddleware>();
 
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    await dbContext.Database.EnsureCreatedAsync();
-}
+app.EnsureDatabaseCreated();
+
+app.MapApplicationHealthChecks();
 
 app.MapControllers();
 
